@@ -24,13 +24,13 @@
             },
             "secure": []
         },
-        "db2": {
-            "type": "db2",
+        "cics": {
+            "type": "cics",
             "properties": {},
             "secure": []
         },
-        "cics": {
-            "type": "cics",
+        "db2": {
+            "type": "db2",
             "properties": {},
             "secure": []
         },
@@ -62,6 +62,16 @@
         },
         "ops": {
             "type": "ops",
+            "properties": {},
+            "secure": []
+        },
+        "mat": {
+            "type": "mat",
+            "properties": {},
+            "secure": []
+        },
+        "pma": {
+            "type": "pma",
             "properties": {},
             "secure": []
         },
@@ -179,12 +189,14 @@
         "zosmf": "zw.zosmf",
         "tso": "zw.tso",
         "ssh": "zw.ssh",
-        "db2": "zw.db2",
         "cics": "zw.cics",
+        "db2": "zw.db2",
         "endevor": "zw.endevor",
         "endevor-location": "marbles",
         "fmp": "zw.fmp",
         "ops": "zw.ops",
+        "mat": "mat",
+        "pma": "pma",
         "base": "my_base",
         "ebg": "ebg",
         "jclcheck": "zw.jclcheck"

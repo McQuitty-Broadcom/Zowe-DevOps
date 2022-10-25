@@ -1,40 +1,68 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$version": 3,
+    "$version": 0.4,
     "type": "object",
-    "description": "config",
+    "description": "Zowe configuration",
     "properties": {
         "profiles": {
             "type": "object",
-            "description": "named profiles config",
+            "description": "Mapping of profile names to profile configurations",
             "patternProperties": {
                 "^\\S*$": {
                     "type": "object",
-                    "description": "a profile",
+                    "description": "Profile configuration object",
                     "properties": {
                         "type": {
-                            "description": "the profile type",
-                            "type": "string"
+                            "description": "Profile type",
+                            "type": "string",
+                            "enum": [
+                                "zosmf",
+                                "tso",
+                                "ssh",
+                                "cics",
+                                "db2",
+                                "endevor",
+                                "endevor-location",
+                                "fmp",
+                                "ops",
+                                "mat",
+                                "pma",
+                                "base"
+                            ]
                         },
                         "properties": {
-                            "description": "the profile properties",
+                            "description": "Profile properties object",
                             "type": "object"
                         },
                         "profiles": {
-                            "description": "additional sub-profiles",
+                            "description": "Optional subprofile configurations",
                             "type": "object",
                             "$ref": "#/properties/profiles"
                         },
                         "secure": {
-                            "description": "secure property names",
+                            "description": "Secure property names",
                             "type": "array",
-                            "prefixItems": {
+                            "items": {
                                 "type": "string"
                             },
                             "uniqueItems": true
                         }
                     },
                     "allOf": [
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": false
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "title": "Missing profile type"
+                                    }
+                                }
+                            }
+                        },
                         {
                             "if": {
                                 "properties": {
@@ -57,7 +85,7 @@
                                             "port": {
                                                 "type": "number",
                                                 "description": "The z/OSMF server port.",
-                                                "default": 1443
+                                                "default": 443
                                             },
                                             "user": {
                                                 "type": "string",
@@ -105,7 +133,7 @@
                                         "required": []
                                     },
                                     "secure": {
-                                        "prefixItems": {
+                                        "items": {
                                             "enum": [
                                                 "user",
                                                 "password"
@@ -218,63 +246,11 @@
                                         "required": []
                                     },
                                     "secure": {
-                                        "prefixItems": {
+                                        "items": {
                                             "enum": [
                                                 "user",
                                                 "password",
                                                 "keyPassphrase"
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            "if": {
-                                "properties": {
-                                    "type": {
-                                        "const": "db2"
-                                    }
-                                }
-                            },
-                            "then": {
-                                "properties": {
-                                    "properties": {
-                                        "type": "object",
-                                        "title": "Db2 Profile",
-                                        "description": "A profile for interaction with Db2 for the z/OS region",
-                                        "properties": {
-                                            "host": {
-                                                "type": "string",
-                                                "description": "The Db2 server host name"
-                                            },
-                                            "port": {
-                                                "type": "number",
-                                                "description": "The Db2 server port number"
-                                            },
-                                            "user": {
-                                                "type": "string",
-                                                "description": "The Db2 user ID (may be the same as the TSO login)"
-                                            },
-                                            "password": {
-                                                "type": "string",
-                                                "description": "The Db2 password (may be the same as the TSO password)"
-                                            },
-                                            "database": {
-                                                "type": "string",
-                                                "description": "The name of the database"
-                                            },
-                                            "sslFile": {
-                                                "type": "string",
-                                                "description": "Path to an SSL Certificate file"
-                                            }
-                                        }
-                                    },
-                                    "secure": {
-                                        "prefixItems": {
-                                            "enum": [
-                                                "user",
-                                                "password"
                                             ]
                                         }
                                     }
@@ -339,7 +315,59 @@
                                         "required": []
                                     },
                                     "secure": {
-                                        "prefixItems": {
+                                        "items": {
+                                            "enum": [
+                                                "user",
+                                                "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "db2"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "Db2 Profile",
+                                        "description": "A profile for interaction with Db2 for the z/OS region",
+                                        "properties": {
+                                            "host": {
+                                                "type": "string",
+                                                "description": "The Db2 server host name"
+                                            },
+                                            "port": {
+                                                "type": "number",
+                                                "description": "The Db2 server port number"
+                                            },
+                                            "user": {
+                                                "type": "string",
+                                                "description": "The Db2 user ID (may be the same as the TSO login)"
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "description": "The Db2 password (may be the same as the TSO password)"
+                                            },
+                                            "database": {
+                                                "type": "string",
+                                                "description": "The name of the database"
+                                            },
+                                            "sslFile": {
+                                                "type": "string",
+                                                "description": "Path to an SSL Certificate file"
+                                            }
+                                        }
+                                    },
+                                    "secure": {
+                                        "items": {
                                             "enum": [
                                                 "user",
                                                 "password"
@@ -406,7 +434,7 @@
                                         }
                                     },
                                     "secure": {
-                                        "prefixItems": {
+                                        "items": {
                                             "enum": [
                                                 "user",
                                                 "password"
@@ -496,16 +524,16 @@
                                 "properties": {
                                     "properties": {
                                         "type": "object",
-                                        "title": "File Master Plus profile schema",
-                                        "description": "File Master Plus profile schema.",
+                                        "title": "CA File Master Plus profile schema",
+                                        "description": "CA File Master Plus profile schema.",
                                         "properties": {
                                             "host": {
                                                 "type": "string",
-                                                "description": "Specifies File Master Plus server host name."
+                                                "description": "Specifies CA File Master Plus server host name."
                                             },
                                             "port": {
                                                 "type": "number",
-                                                "description": "Specifies File Master Plus server port."
+                                                "description": "Specifies CA File Master Plus server port."
                                             },
                                             "user": {
                                                 "type": "string",
@@ -517,7 +545,7 @@
                                             },
                                             "protocol": {
                                                 "type": "string",
-                                                "description": "Specifies File Master Plus REST API protocol.",
+                                                "description": "Specifies CA File Master Plus REST API protocol.",
                                                 "default": "https",
                                                 "enum": [
                                                     "http",
@@ -537,7 +565,7 @@
                                         "required": []
                                     },
                                     "secure": {
-                                        "prefixItems": {
+                                        "items": {
                                             "enum": [
                                                 "user",
                                                 "password"
@@ -594,15 +622,143 @@
                                             },
                                             "subsystem": {
                                                 "type": "string",
-                                                "description": "Specifies the subsystem id of the OPS/MVS instance to which commands will be directed."
+                                                "description": "Specifies the subsystem id of the CA OPS/MVS instance to which commands will be directed."
                                             }
                                         }
                                     },
                                     "secure": {
-                                        "prefixItems": {
+                                        "items": {
                                             "enum": [
                                                 "user",
                                                 "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "mat"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "CA MAT Analyze CLI profile schema",
+                                        "description": "CA MAT Analyze CLI profile schema.",
+                                        "properties": {
+                                            "protocol": {
+                                                "type": "string",
+                                                "description": "Specifies the protocol defined for the CA MAT REST API server (http or https).",
+                                                "enum": [
+                                                    "http",
+                                                    "https"
+                                                ]
+                                            },
+                                            "hostname": {
+                                                "type": "string",
+                                                "description": "Specifies the hostname or IP address defined for the CA MAT REST API server (e.g. 127.0.0.0 or localhost)."
+                                            },
+                                            "port": {
+                                                "type": "number",
+                                                "description": "Specifies the server port (e.g. 8080)."
+                                            },
+                                            "username": {
+                                                "type": "string",
+                                                "description": "Your mainframe username."
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "description": "Your mainframe password."
+                                            },
+                                            "zowediscoverable": {
+                                                "type": "boolean",
+                                                "description": "Specifies whether you want to use Zowe API Mediation Layer to process the commands for this profile. Set '--zowediscoverable true' only if you have configured the Zowe API Mediation Layer properties in your CA MAT REST API server settings.",
+                                                "enum": [
+                                                    "false",
+                                                    "true"
+                                                ]
+                                            },
+                                            "listingDir": {
+                                                "type": "string",
+                                                "description": "Specifies the directory where you want to store the registered program listings (e.g. 'c:\\listings') for your immediate source code inspection. You can use the advantage of automated listing registration with CA MAT and listing retrieval through CA Endevor® footprints for Cobol, C/C++, and Assembler programs. When a source program listing is registered with CA MAT, you can enhance the histogram analysis data with the program listing details that pertain to the specific CSECT and program statement. The listing is transfered to the specified directory, which enables you to navigate directly to the line of the source code in you VS Code IDE and inspect the program statement. To use the listing retrieval option through CA Endevor® footprints, you need to have the CA Endevor® Web Services installed and configured and specify the CA Endevor® web server details in the CA MAT database configuration."
+                                            }
+                                        },
+                                        "required": [
+                                            "protocol",
+                                            "hostname",
+                                            "port",
+                                            "username",
+                                            "password",
+                                            "zowediscoverable"
+                                        ]
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "username",
+                                                "password"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "const": "pma"
+                                    }
+                                }
+                            },
+                            "then": {
+                                "properties": {
+                                    "properties": {
+                                        "type": "object",
+                                        "title": "CA MAT Detect CLI profile schema",
+                                        "description": "CA MAT Detect CLI profile schema.",
+                                        "properties": {
+                                            "job_acct": {
+                                                "type": "string",
+                                                "description": "Specifies z/OS TSO/E accounting information. Values: numeric characters (0-9)"
+                                            },
+                                            "job_class": {
+                                                "type": "string",
+                                                "description": "Your z/OS class information. Values: alphanumeric characters (A-Z, 0-9) "
+                                            },
+                                            "job_mclass": {
+                                                "type": "string",
+                                                "description": "Specifies the MSGCLASS parameter value and assigns the job log to the specified output class. The specified MSGCLASS value is used in all JCLs that PMA runs while you execute the commands. If you do not provide the job_mclass parameter, the default MSGCLASS value is used. Values: alphanumeric characters (A-Z, 0-9) ",
+                                                "default": "A"
+                                            },
+                                            "job_load": {
+                                                "type": "string",
+                                                "description": "Specifies the PMA loadlib data set name that you defined during the PMA customization (&HLQ.CEETLOAD) "
+                                            },
+                                            "job_pmahlq": {
+                                                "type": "string",
+                                                "description": "Specifies your PMA HLQ to access the KSDSALT, KSDSJOB, and KSDSEXC VSAM files to collect the necessary data"
+                                            }
+                                        },
+                                        "required": [
+                                            "job_acct",
+                                            "job_class",
+                                            "job_mclass",
+                                            "job_load",
+                                            "job_pmahlq"
+                                        ]
+                                    },
+                                    "secure": {
+                                        "items": {
+                                            "enum": [
+                                                "job_load",
+                                                "job_pmahlq"
                                             ]
                                         }
                                     }
@@ -665,7 +821,7 @@
                                         "required": []
                                     },
                                     "secure": {
-                                        "prefixItems": {
+                                        "items": {
                                             "enum": [
                                                 "user",
                                                 "password",
@@ -682,39 +838,61 @@
         },
         "defaults": {
             "type": "object",
-            "description": "default profiles config",
+            "description": "Mapping of profile types to default profile names",
             "properties": {
                 "zosmf": {
+                    "description": "Default zosmf profile",
                     "type": "string"
                 },
                 "tso": {
+                    "description": "Default tso profile",
                     "type": "string"
                 },
                 "ssh": {
-                    "type": "string"
-                },
-                "db2": {
+                    "description": "Default ssh profile",
                     "type": "string"
                 },
                 "cics": {
+                    "description": "Default cics profile",
+                    "type": "string"
+                },
+                "db2": {
+                    "description": "Default db2 profile",
                     "type": "string"
                 },
                 "endevor": {
+                    "description": "Default endevor profile",
                     "type": "string"
                 },
                 "endevor-location": {
+                    "description": "Default endevor-location profile",
                     "type": "string"
                 },
                 "fmp": {
+                    "description": "Default fmp profile",
                     "type": "string"
                 },
                 "ops": {
+                    "description": "Default ops profile",
+                    "type": "string"
+                },
+                "mat": {
+                    "description": "Default mat profile",
+                    "type": "string"
+                },
+                "pma": {
+                    "description": "Default pma profile",
                     "type": "string"
                 },
                 "base": {
+                    "description": "Default base profile",
                     "type": "string"
                 }
             }
+        },
+        "autoStore": {
+            "type": "boolean",
+            "description": "If true, values you enter when prompted are stored for future use"
         }
     }
 }

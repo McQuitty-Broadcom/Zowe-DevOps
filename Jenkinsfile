@@ -30,7 +30,7 @@ pipeline {
             steps {
                 //ZOWE_OPT_USERNAME & ZOWE_OPT_PASSWORD are used to interact with Endevor 
                 withCredentials([usernamePassword(credentialsId: 'eosCreds', usernameVariable: 'ZOWE_OPT_USER', passwordVariable: 'ZOWE_OPT_PASSWORD')]) {
-                    sh 'echo build'
+                    sh 'gulp build'
                 }
             }
         }
@@ -38,7 +38,7 @@ pipeline {
             steps {
                 //ZOWE_OPT_USER & ZOWE_OPT_PASSWORD are used to interact with z/OSMF and CICS
                 withCredentials([usernamePassword(credentialsId: 'eosCreds', usernameVariable: 'ZOWE_OPT_USER', passwordVariable: 'ZOWE_OPT_PASSWORD')]) {
-                    sh 'echo deploy'
+                    sh 'gulp deploy'
                 }
             }
         }
@@ -46,22 +46,22 @@ pipeline {
             steps {
                 //ZOWE_OPT_USER & ZOWE_OPT_PASS are used to interact with z/OSMF
                 withCredentials([usernamePassword(credentialsId: 'eosCreds', usernameVariable: 'ZOWE_OPT_USER', passwordVariable: 'ZOWE_OPT_PASSWORD')]) {
-                    sh 'echo test'
+                    sh 'npm test'
                 }
             }
         }
     }
 
-    // post {
-    //     always {
-    //         publishHTML([allowMissing: false,
-    //             alwaysLinkToLastBuild: true,
-    //             keepAll: true,
-    //             reportDir: 'mochawesome-report',
-    //             reportFiles: 'mochawesome.html',
-    //             reportName: 'Test Results',
-    //             reportTitles: 'Test Report'
-    //             ])
-    //     }
-    // }
+    post {
+        always {
+            publishHTML([allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'mochawesome-report',
+                reportFiles: 'mochawesome.html',
+                reportName: 'Test Results',
+                reportTitles: 'Test Report'
+                ])
+        }
+    }
 }
